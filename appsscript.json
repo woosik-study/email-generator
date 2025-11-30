@@ -1,13 +1,43 @@
 {
   "timeZone": "America/Los_Angeles",
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
   "oauthScopes": [
+    "https://www.googleapis.com/auth/gmail.addons.execute",
+    "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
+    "https://www.googleapis.com/auth/gmail.addons.current.action.compose",
+    "https://www.googleapis.com/auth/gmail.modify",
     "https://www.googleapis.com/auth/cloud-platform",
     "https://www.googleapis.com/auth/script.external_request",
-    "https://www.googleapis.com/auth/gmail.modify"
+    "https://www.googleapis.com/auth/script.locale"
   ],
-  "dependencies": {
-    "enabledAdvancedServices": []
-  },
-  "exceptionLogging": "STACKDRIVER",
-  "runtimeVersion": "V8"
+  "addOns": {
+    "common": {
+      "name": "Email AI Generator",
+      "logoUrl": "https://raw.githubusercontent.com/UCSD-Likelion/email-generator/refs/heads/seah_logo/assets/cx_icon.png",
+      "useLocaleFromApp": true,
+      "homepageTrigger": {
+        "runFunction": "buildAddOn",
+        "enabled": true
+      }
+    },
+    "gmail": {
+      "contextualTriggers": [
+        {
+          "unconditional": {},
+          "onTriggerFunction": "buildAddOn"
+        }
+      ],
+      "composeTrigger": {
+        "selectActions": [
+          {
+            "text": "Generate Draft"
+          }
+        ],
+        "draftAccess": "NONE"
+      },
+      "primaryColor": "#4285F4",
+      "secondaryColor": "#FFFFFF"
+    }
+  }
 }
