@@ -1,30 +1,50 @@
 function createCalendarEvent(e) {
   try {
-    const params = e.commonEventObject.parameters;
+   
+    const params = e.parameters;
 
     const title = params.title;
-    const start = new Date(params.start);
-    const end = new Date(params.end);
+    const startStr = params.start;
+    const endStr = params.end;
 
-    if (!title || isNaN(start) || isNaN(end)) {
-      throw new Error("Invalid event parameters.");
+
+    if (!title || !startStr || !endStr) {
+      throw new Error("Missing event parameters (title, start, or end).");
     }
 
-    const calendar = CalendarApp.getDefaultCalendar();
+   
+    const start = new Date(startStr);
+    const end = new Date(endStr);
 
-    calendar.createEvent(title, start, end);
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      throw new Error(`Invalid date format. Start: ${startStr}, End: ${endStr}`);
+    }
+
+ 
+    if (start >= end) {
+      throw new Error("Start time must be before end time.");
+    }
+
+  
+    const calendar = CalendarApp.getDefaultCalendar();
+    const event = calendar.createEvent(title, start, end);
+
+    console.log(`Calendar event created: ${event.getId()}`);
 
     return CardService.newActionResponseBuilder()
       .setNotification(
-        CardService.newNotification().setText("Event added to Google Calendar!")
+        CardService.newNotification()
+          .setText(`✅ "${title}" added to Google Calendar!`)
       )
       .build();
+
   } catch (err) {
+    console.error("Calendar event creation error:", err);
+    
     return CardService.newActionResponseBuilder()
       .setNotification(
-        CardService.newNotification().setText(
-          "Failed to create event: " + err.message
-        )
+        CardService.newNotification()
+          .setText(`❌ Failed to create event: ${err.message}`)
       )
       .build();
   }

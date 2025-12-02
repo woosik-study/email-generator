@@ -1,6 +1,7 @@
-
+// ============================================
 // CARD 1: COMPOSE MODE - Initial Input Card
-
+// Displays form for creating a new email draft
+// ============================================
 
 function buildComposeCard() {
   console.log("buildComposeCard called");
@@ -10,7 +11,7 @@ function buildComposeCard() {
       CardService.newTextInput()
         .setFieldName("recipient")
         .setTitle("To (Recipient)")
-        .setHint("e.g., john@example.com")
+        .setHint("e.g., john")
     )
     .addWidget(
       CardService.newTextParagraph().setText(
@@ -27,7 +28,7 @@ function buildComposeCard() {
     .addWidget(
       CardService.newButtonSet().addButton(
         CardService.newTextButton()
-          .setText("Generate Draft")
+          .setText("✨ Generate Draft")
           .setOnClickAction(
             CardService.newAction()
               .setFunctionName("generateCompose")
@@ -37,7 +38,7 @@ function buildComposeCard() {
 
   const card = CardService.newCardBuilder()
     .setHeader(
-      CardService.newCardHeader().setTitle("✉️ Email Draft Generator")
+      CardService.newCardHeader().setTitle("Email Compose Draft")
     )
     .addSection(section)
     .build();
@@ -46,9 +47,10 @@ function buildComposeCard() {
   return [card];
 }
 
-
+// ============================================
 // CARD 2: REPLY MODE - Email Preview Card
-
+// Shows email preview and options to generate reply or summarize
+// ============================================
 
 function buildReplyCard(e) {
   const messageId = e.messageMetadata.messageId;
@@ -68,24 +70,47 @@ function buildReplyCard(e) {
     )
     .addWidget(
       CardService.newTextParagraph().setText(
-        "<i>Click the button below to generate an AI reply.</i>"
+        "<i>Choose an action below.</i>"
       )
     )
     .addWidget(
-      CardService.newButtonSet().addButton(
-        CardService.newTextButton()
-          .setText("Generate AI Reply")
-          .setOnClickAction(
-            CardService.newAction()
-              .setFunctionName("generateReply")
-              .setParameters({messageId: messageId})
-          )
-      )
+      CardService.newButtonSet()
+        .addButton(
+          CardService.newTextButton()
+            .setText("Generate AI Reply")
+            .setOnClickAction(
+              CardService.newAction()
+                .setFunctionName("generateReply")
+                .setParameters({messageId: messageId})
+            )
+        )
+        .addButton(
+          CardService.newTextButton()
+            .setText("Summarize Email")
+            .setOnClickAction(
+              CardService.newAction()
+                .setFunctionName("handleSummarizeEmail")
+                .setParameters({messageId: messageId})
+            )
+        )
+    )
+    .addWidget(
+      CardService.newButtonSet()
+        .addButton(
+          CardService.newTextButton()
+            .setText("Return to Latest")
+            .setOnClickAction(
+              CardService.newAction()
+                .setFunctionName("refreshLatestReply")
+                .setParameters({messageId: messageId})
+            )
+        )
     );
 
   const card = CardService.newCardBuilder()
     .setHeader(
-      CardService.newCardHeader().setTitle("📧 Email Reply Generator")
+      CardService.newCardHeader()
+        .setTitle("Email Reply Draft")
     )
     .addSection(section)
     .build();
@@ -93,9 +118,10 @@ function buildReplyCard(e) {
   return [card];
 }
 
-
+// ============================================
 // CARD 3: COMPOSE MODE - Generated Draft Display Card
-
+// Shows the AI-generated email draft with options to regenerate or go back
+// ============================================
 
 function buildGeneratedDraftCard(aiDraft, userInput, recipient, subject, isRegenerated = false) {
   const section = CardService.newCardSection();
@@ -103,12 +129,6 @@ function buildGeneratedDraftCard(aiDraft, userInput, recipient, subject, isRegen
   if (recipient) {
     section.addWidget(
       CardService.newKeyValue().setTopLabel("To").setContent(recipient)
-    );
-  }
-  
-  if (subject) {
-    section.addWidget(
-      CardService.newKeyValue().setTopLabel("Subject").setContent(subject)
     );
   }
   
@@ -123,7 +143,7 @@ function buildGeneratedDraftCard(aiDraft, userInput, recipient, subject, isRegen
       CardService.newButtonSet()
         .addButton(
           CardService.newTextButton()
-            .setText("🔄 Regenerate")
+            .setText("Regenerate")
             .setOnClickAction(
               CardService.newAction()
                 .setFunctionName("regenerateCompose")
@@ -136,7 +156,7 @@ function buildGeneratedDraftCard(aiDraft, userInput, recipient, subject, isRegen
         )
         .addButton(
           CardService.newTextButton()
-            .setText("◀ Back")
+            .setText("Back")
             .setOnClickAction(
               CardService.newAction()
                 .setFunctionName("goBackToCompose")
@@ -156,9 +176,10 @@ function buildGeneratedDraftCard(aiDraft, userInput, recipient, subject, isRegen
   return card;
 }
 
-
+// ============================================
 // CARD 4: REPLY MODE - Generated Reply Display Card
-
+// Shows the AI-generated reply with options to regenerate or go back
+// ============================================
 
 function buildGeneratedReplyCard(aiReply, messageId) {
   const section = CardService.newCardSection()
@@ -172,11 +193,19 @@ function buildGeneratedReplyCard(aiReply, messageId) {
       CardService.newButtonSet()
         .addButton(
           CardService.newTextButton()
-            .setText("🔄 Regenerate")
+            .setText("Regenerate")
             .setOnClickAction(
               CardService.newAction()
                 .setFunctionName("generateReply")
                 .setParameters({messageId: messageId})
+            )
+        )
+        .addButton(
+          CardService.newTextButton()
+            .setText("Back")
+            .setOnClickAction(
+              CardService.newAction()
+                .setFunctionName("buildAddOn")
             )
         )
     );
@@ -191,9 +220,9 @@ function buildGeneratedReplyCard(aiReply, messageId) {
   return card;
 }
 
-
-// CARD 5: ERROR DISPLAY CARD (Enhanced Version)
-
+// ============================================
+// CARD 5: ERROR DISPLAY CARD
+// ============================================
 
 function buildErrorCard(errorMessage) {
   const errorCard = CardService.newCardBuilder()
@@ -209,7 +238,12 @@ function buildErrorCard(errorMessage) {
       CardService.newCardSection()
         .addWidget(
           CardService.newTextParagraph().setText(
-            `An error occurred: ${errorMessage}`
+            `<b>Error:</b><br>${errorMessage}`
+          )
+        )
+        .addWidget(
+          CardService.newTextParagraph().setText(
+            "<i>Please try again or contact support if the issue persists.</i>"
           )
         )
         .addWidget(
@@ -227,9 +261,9 @@ function buildErrorCard(errorMessage) {
   return errorCard;
 }
 
-
+// ============================================
 // HELPER: Show Error Card with Navigation
-
+// ============================================
 
 function showErrorCard(errorMessage) {
   const card = buildErrorCard(errorMessage);

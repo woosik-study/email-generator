@@ -35,7 +35,8 @@
       "composeTrigger": {
         "selectActions": [
           {
-            "text": "Generate Draft"
+            "text": "Generate Draft",
+            "runFunction": "buildAddOn"
           }
         ],
         "draftAccess": "NONE"
