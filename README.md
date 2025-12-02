@@ -22,7 +22,7 @@ An intelligent Gmail add-on that uses Google's Vertex AI (Gemini) to help you co
 ### Installation
 
 1. **Clone or copy the code files**:
-   - `Main.gs` - Entry point and action handlers
+   - `Code.gs` - Entry point and action handlers
    - `Cards.gs` - UI card builders
    - `Vertex.gs` - Vertex AI integration
 
