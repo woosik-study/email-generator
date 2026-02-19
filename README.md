@@ -2,6 +2,16 @@
 
 An intelligent Gmail add-on that uses Google's Vertex AI (Gemini) to help you compose emails, generate replies, summarize messages, and extract calendar events automatically.
 
+## My Contribution (Woosik Kim)
+
+I owned the end-to-end implementation of the calendar integration module:
+- Built text-based event parsing logic to extract dates and times from AI-generated email content
+- Implemented one-click Google Calendar event creation using OAuth-scoped Calendar API access
+- Tested and validated the feature in a deployed Gmail sidebar add-on
+
+## Tech Stack
+Google Apps Script • Vertex AI (Gemini) • Gmail API • Google Calendar API • OAuth
+
 ## Features
 
 - **AI Reply Generation**: Automatically generate professional replies to emails
